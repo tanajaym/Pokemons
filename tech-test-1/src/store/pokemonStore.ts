@@ -1,50 +1,42 @@
+import { makeAutoObservable } from 'mobx';
 import axios from 'axios';
-import { action, makeAutoObservable, observable, runInAction } from 'mobx';
 
-// Интерфейс для данных о покемоне
 interface Pokemon {
     name: string;
-    abilities: { ability: { name: string } }[];
-    sprites: { front_default: string };
+    url: string;
 }
 
-export class PokemonStore {
-    pokemon: Pokemon | null = null; // Данные о покемоне
-    isLoading = false; // Состояние загрузки
-    error: string | null = null; // Ошибка, если есть
+class PokemonStore {
+    pokemons: Pokemon[] = [];
+    loading = false;
+    error = '';
 
     constructor() {
-        makeAutoObservable(this, {
-            pokemon: observable,
-            isLoading: observable,
-            error: observable,
-            fetchPokemon: action,
-        });
+        makeAutoObservable(this);
     }
 
-    // Метод для загрузки данных о покемоне
-    fetchPokemon = async (pokemonName: string) => {
-        this.isLoading = true;
-        this.error = null;
-
+    async fetchPokemons() {
+        this.loading = true;
         try {
-            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
-            runInAction(() => {
-                this.pokemon = {
-                    name: response.data.name,
-                    abilities: response.data.abilities,
-                    sprites: response.data.sprites,
-                };
-                this.isLoading = false;
-            });
-        } catch (err) {
-            runInAction(() => {
-                this.error = 'Failed to fetch Pokémon data';
-                this.isLoading = false;
-            });
+            const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=124');
+            this.pokemons = response.data.results;
+        } catch (error) {
+            this.error = 'Failed to fetch pokemons';
+        } finally {
+            this.loading = false;
         }
-    };
+    }
+
+    removePokemon(name: string) {
+        this.pokemons = this.pokemons.filter(pokemon => pokemon.name !== name);
+    }
+
+    editPokemon(name: string, newName: string) {
+        const pokemon = this.pokemons.find(p => p.name === name);
+        if (pokemon) {
+            pokemon.name = newName;
+        }
+    }
 }
 
-// Экспорт синглтона хранилища
-export default new PokemonStore();
+export const pokemonStore = new PokemonStore();
