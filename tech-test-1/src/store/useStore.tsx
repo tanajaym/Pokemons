@@ -29,7 +29,7 @@
 //
 // export default PokemonList;
 //
-import React, {JSX, useEffect} from 'react'; // Импорт React (обязательно для React 16 и ниже)
+import React, {JSX, useEffect, useCallback} from 'react'; // Импорт React (обязательно для React 16 и ниже)
 import { observer } from 'mobx-react-lite';
 import { pokemonStore } from './pokemonStore';
 // @ts-ignore
@@ -51,6 +51,22 @@ const PokemonList = (props: PokemonListProps): JSX.Element => {
     useEffect(() => {
         pokemonStore.fetchPokemons();
     }, []);
+
+    // Обработчик бесконечной прокрутки
+    const handleScroll = useCallback(() => {
+        const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+
+        // Если пользователь прокрутил до конца страницы и не происходит загрузка
+        if (scrollTop + clientHeight >= scrollHeight - 10 && !pokemonStore.loading && !pokemonStore.nextPageLoaded) {
+            pokemonStore.fetchPokemons();
+        }
+    }, []);
+
+    // Добавляем обработчик прокрутки
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [handleScroll]);
 
     if (pokemonStore.loading) return <div>Loading...</div>;
     if (pokemonStore.error) return <div>Error: {pokemonStore.error}</div>;

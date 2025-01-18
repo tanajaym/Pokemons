@@ -54,27 +54,33 @@ class PokemonStore {
     pokemons: Pokemon[] = [];
     loading = false;
     error = '';
+    nexPage: string | null = 'https://pokeapi.co/api/v2/pokemon?limit=20';
+    nextPageLoaded = false;
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    // Асинхронный метод для загрузки покемонов
+    // Загрузка следующей страницы покемонов
     async fetchPokemons() {
-        this.setLoading(true); // Используем action для изменения состояния
+        if (!this. nexPage || this.loading || this.nextPageLoaded) return; // Если следующей страницы нет или уже загружаем данные, выходим
+
+        this.setLoading(true);
         try {
-            const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=124');
+            const response = await axios.get(this. nexPage);
             const pokemonsWithImages = response.data.results.map((pokemon: any) => ({
                 name: pokemon.name,
                 url: pokemon.url,
                 image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split('/')[6]}.png`,
             }));
             runInAction(() => {
-                this.pokemons = pokemonsWithImages; // Изменение состояния внутри runInAction
+                this.pokemons = [...this.pokemons, ...pokemonsWithImages]; // Добавляем новые данные к существующим
+                this. nexPage = response.data.next; // Обновляем URL следующей страницы
+                this.nextPageLoaded = !response.data.next; // Устанавливаем флаг, если следующей страницы нет
             });
         } catch (error) {
             runInAction(() => {
-                this.error = 'Failed to fetch pokemons'; // Изменение состояния внутри runInAction
+                this.error = 'Failed to fetch more pokemons'; // Изменение состояния внутри runInAction
             });
         } finally {
             runInAction(() => {
@@ -83,23 +89,18 @@ class PokemonStore {
         }
     }
 
-    // Метод для удаления покемона
-    removePokemon(name: string) {
-        this.pokemons = this.pokemons.filter(pokemon => pokemon.name !== name);
-    }
-
-    // Метод для редактирования имени покемона
+    // method for removing and editing pokemons
+    //remove
+    removePokemon(name: string) {this.pokemons = this.pokemons.filter(pokemon => pokemon.name !== name);}
+    //edit
     editPokemon(name: string, newName: string) {
         const pokemon = this.pokemons.find(p => p.name === name);
         if (pokemon) {
             pokemon.name = newName;
         }
     }
-
     // Action для изменения состояния loading
-    setLoading(value: boolean) {
-        this.loading = value;
-    }
+    setLoading(value: boolean) {this.loading = value;}
 }
 
 export const pokemonStore = new PokemonStore();
