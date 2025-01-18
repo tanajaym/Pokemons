@@ -42,10 +42,10 @@
 //
 // export default App;
 
-import React from 'react';
+import React, {JSX} from 'react';
 import PokemonList from './store/useStore';
 
-const App: React.FC = () => {
+ const App = (): JSX.Element => {
     return (
         <div>
             <h1>Pokémon List</h1>

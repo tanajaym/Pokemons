@@ -43,6 +43,7 @@ interface PokemonListProps {
 interface Pokemon {
     name: string;
     url: string;
+    image: string;
 }
 
 // Компонент без React.FC
@@ -58,6 +59,7 @@ const PokemonList = (props: PokemonListProps): JSX.Element => {
         <div className='wrapper'>
             {pokemonStore.pokemons.map((pokemon: Pokemon) => (
                 <div key={pokemon.name} className='listPokemon'>
+                    <img src={pokemon.image}></img>
                     <span>{pokemon.name}</span>
                     <button onClick={() => pokemonStore.removePokemon(pokemon.name)}>Remove</button>
                     <button onClick={() => {
