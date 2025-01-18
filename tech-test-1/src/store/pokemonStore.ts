@@ -1,48 +1,7 @@
-// import { makeAutoObservable } from 'mobx';
-// import axios from 'axios';
-//
-// interface Pokemon {
-//     name: string;
-//     url: string;
-// }
-//
-// class PokemonStore {
-//     pokemons: Pokemon[] = [];
-//     loading = false;
-//     error = '';
-//
-//     constructor() {
-//         makeAutoObservable(this);
-//     }
-//
-//     async fetchPokemons() {
-//         this.loading = true;
-//         try {
-//             const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=124');
-//             this.pokemons = response.data.results;
-//         } catch (error) {
-//             this.error = 'Failed to fetch pokemons';
-//         } finally {
-//             this.loading = false;
-//         }
-//     }
-//
-//     removePokemon(name: string) {
-//         this.pokemons = this.pokemons.filter(pokemon => pokemon.name !== name);
-//     }
-//
-//     editPokemon(name: string, newName: string) {
-//         const pokemon = this.pokemons.find(p => p.name === name);
-//         if (pokemon) {
-//             pokemon.name = newName;
-//         }
-//     }
-// }
-//
-// export const pokemonStore = new PokemonStore();
 
-import { makeAutoObservable, action, runInAction } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import axios from 'axios';
+import '../style/style.scss'
 
 interface Pokemon {
     name: string;
@@ -57,9 +16,7 @@ class PokemonStore {
     nexPage: string | null = 'https://pokeapi.co/api/v2/pokemon?limit=20';
     nextPageLoaded = false;
 
-    constructor() {
-        makeAutoObservable(this);
-    }
+    constructor() {makeAutoObservable(this);}
 
     // Загрузка следующей страницы покемонов
     async fetchPokemons() {
@@ -68,11 +25,18 @@ class PokemonStore {
         this.setLoading(true);
         try {
             const response = await axios.get(this. nexPage);
-            const pokemonsWithImages = response.data.results.map((pokemon: any) => ({
-                name: pokemon.name,
-                url: pokemon.url,
-                image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split('/')[6]}.png`,
-            }));
+            const pokemonsWithImages = response.data.results.map((pokemon: any) => {
+
+                const url = new URL(pokemon.url);
+                const pathSegments = url.pathname.split('/').filter(Boolean);
+                const id = pathSegments[pathSegments.length - 1];
+
+                return {
+                    name: pokemon.name,
+                    url: pokemon.url,
+                    image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+                };
+            });
             runInAction(() => {
                 this.pokemons = [...this.pokemons, ...pokemonsWithImages]; // Добавляем новые данные к существующим
                 this. nexPage = response.data.next; // Обновляем URL следующей страницы
@@ -99,7 +63,7 @@ class PokemonStore {
             pokemon.name = newName;
         }
     }
-    // Action для изменения состояния loading
+
     setLoading(value: boolean) {this.loading = value;}
 }
 

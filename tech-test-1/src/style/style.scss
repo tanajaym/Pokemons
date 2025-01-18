@@ -1,0 +1,154 @@
+
+$gardient-main-color: #ff9a9e;
+$gardient-second-color: #fad0c4;
+$background-color: #2b2e30;
+$background-color-2: #fdfdfd;
+$hover-button-bg: rgba(244, 241, 241, 0.96);
+$text-color: #3a3237;
+$border-radius: 12px;
+$box-shadow: 0 4px 14px #ddd3db;
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Outfit&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+body{
+  background-color: $background-color;
+  font-family: 'Outfit', sans-serif;
+}
+
+.heading {
+  text-align: center;
+  background-color: $background-color;
+  color: $gardient-main-color;
+}
+// Общие стили для контейнера
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 25px;
+  padding: 25px;
+  background-color: $background-color;
+}
+
+.pokemonCard {
+  background: linear-gradient(135deg, $gardient-main-color, $gardient-second-color);
+  border-radius: $border-radius;
+  //box-shadow: $box-shadow;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+
+  .pokemonName {
+    color: $text-color;
+    display: block;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+
+  &:hover {
+    transform: translateY(-10px);
+    //box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: $box-shadow;
+  }
+
+  img {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .buttonsWrapper{
+    display: flex;
+    padding: 3px ;
+    margin: 10px;
+    //background-color: red;
+  }
+
+  button {
+    flex: 1;
+    padding: 10px;
+    margin: 0 8px 0 8px;
+    border: solid 5px;
+    border-radius: 15px;
+    border-color: transparent;
+    background-color: $background-color-2;
+    color: $text-color;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover{
+      background-color: $hover-button-bg;
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1); // Полупрозрачный фон
+
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      &:first-child {
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+
+// Адаптивные стили
+@media (max-width: 768px) {
+  .wrapper {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .pokemonCard {
+    img {
+      height: 200px;
+    }
+
+    span {
+      font-size: 18px;
+    }
+
+    .actions {
+      button {
+        font-size: 12px;
+        padding: 8px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .wrapper {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .pokemonCard {
+    img {
+      height: 120px;
+    }
+
+    span {
+      font-size: 16px;
+    }
+
+    .actions {
+      button {
+        font-size: 10px;
+        padding: 6px;
+
+      }
+    }
+  }
+}
