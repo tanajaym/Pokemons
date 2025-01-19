@@ -4,6 +4,9 @@
     "target": "es5",    // Целевая версия JavaScript
     "module": "es6",    // Использование модулей ES6
     "jsx": "react",     // Поддержка JSX для React
+    "compilerOptions": {
+      "types": ["jest", "@testing-library/jest-dom"]
+    },
     "noImplicitAny": true, // Запрет на неявное использование `any`
     "allowSyntheticDefaultImports": true, // Разрешение синтетических импортов по умолчанию
     "moduleResolution": "node", // Разрешение модулей в стиле Node.js
