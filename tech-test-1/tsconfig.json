@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist", // Папка для скомпилированных файлов
+    "target": "es5",    // Целевая версия JavaScript
+    "module": "es6",    // Использование модулей ES6
+    "jsx": "react",     // Поддержка JSX для React
+    "compilerOptions": {
+      "types": ["jest", "@testing-library/jest-dom"]
+    },
+    "noImplicitAny": true, // Запрет на неявное использование `any`
+    "allowSyntheticDefaultImports": true, // Разрешение синтетических импортов по умолчанию
+    "moduleResolution": "node", // Разрешение модулей в стиле Node.js
+    "baseUrl": ".",     // Базовый путь для абсолютных импортов
+    "paths": {          // Алиасы для путей (если нужно)
+      "@/*": ["src/*"]
+    },
+    "strict": true,     // Включение всех строгих проверок TypeScript
+    "esModuleInterop": true, // Упрощение работы с CommonJS модулями
+    "skipLibCheck": true, // Пропуск проверки типов в библиотеках
+    "resolveJsonModule": true // Разрешение импорта JSON-файлов
+  },
+  "include": ["src/**/*"], // Включаемые файлы
+  "exclude": ["node_modules", "dist"] // Исключаемые файлы
+}
