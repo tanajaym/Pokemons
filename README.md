@@ -4,7 +4,7 @@ here is a technical test for vk-internship
 ## Привет! Меня зовут Ева!
 ## В данном приложении я использую `Pokémon API`, который отображает список всех покемонов и их формы. я люблю покемонов.
 
-#### Стэк: `TS, React/MobX, SCSS, Webpack, Jest, React Testing Library`
+#### Стек: `TS, React/MobX, SCSS, Webpack, Jest, React Testing Library`
 
 #### Демо-версия приложения
 
