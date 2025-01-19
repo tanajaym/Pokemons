@@ -12,8 +12,8 @@ class PokemonStore {
     pokemons: Pokemon[] = []; // Список покемонов
     loading = false; // Состояние загрузки
     error = ''; // Состояние ошибки
-    currPage = 1; // Текущая страница
-    prevPage = 0; // Предыдущая страница
+    currPage = 1; 
+    prevPage = 0; 
     wasLastList = false; // Флаг, указывающий, что это последний список
 
     constructor() {
@@ -22,7 +22,7 @@ class PokemonStore {
 
     // Загрузка данных
     async fetchPokemons() {
-        if (this.wasLastList || this.loading || this.prevPage === this.currPage) return; // Если это последний список, идет загрузка или страница не изменилась, выходим
+        if (this.wasLastList || this.loading || this.prevPage === this.currPage) return; 
 
         this.setLoading(true);
         try {
@@ -32,7 +32,7 @@ class PokemonStore {
 
             if (response.data.results.length === 0) {
                 runInAction(() => {
-                    this.wasLastList = true; // Если данных нет, устанавливаем флаг, что это последний список
+                    this.wasLastList = true; 
                 });
             } else {
                 const pokemonsWithImages = response.data.results.map((pokemon: any) => {
@@ -49,16 +49,16 @@ class PokemonStore {
 
                 runInAction(() => {
                     this.pokemons = [...this.pokemons, ...pokemonsWithImages];
-                    this.prevPage = this.currPage; // Обновляем предыдущую страницу
+                    this.prevPage = this.currPage; 
                 });
             }
         } catch (error) {
             runInAction(() => {
-                this.error = 'Failed to fetch pokemons'; // Обработка ошибки
+                this.error = 'Failed to fetch pokemons'; 
             });
         } finally {
             runInAction(() => {
-                this.setLoading(false); // Завершаем загрузку
+                this.setLoading(false); 
             });
         }
     }
