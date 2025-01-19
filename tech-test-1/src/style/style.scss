@@ -14,15 +14,16 @@ body{
   font-family: 'Outfit', sans-serif;
 }
 
+
 .heading {
   text-align: center;
   background-color: $background-color;
   color: $gardient-main-color;
 }
-// Общие стили для контейнера
+
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
   gap: 25px;
   padding: 25px;
   background-color: $background-color;
@@ -35,6 +36,7 @@ body{
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
+
 
   .pokemonName {
     color: $text-color;
@@ -102,9 +104,9 @@ body{
   }
 
 // Адаптивные стили
-@media (max-width: 768px) {
+@media (max-width: 650px) {
   .wrapper {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
     padding: 20px;
   }
@@ -118,6 +120,14 @@ body{
       font-size: 18px;
     }
 
+    .buttonsWrapper{
+      display: flex;
+      padding: 3px ;
+      margin: 10px;
+      //background-color: red;
+    }
+
+
     .actions {
       button {
         font-size: 12px;
@@ -129,6 +139,8 @@ body{
 
 @media (max-width: 480px) {
   .wrapper {
+    //display: flex;
+    //flex-wrap: wrap;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 15px;
     padding: 15px;

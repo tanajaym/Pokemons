@@ -1,7 +1,6 @@
 
 import { makeAutoObservable, runInAction } from 'mobx';
 import axios from 'axios';
-import '../style/style.scss'
 
 interface Pokemon {
     name: string;
@@ -10,61 +9,75 @@ interface Pokemon {
 }
 
 class PokemonStore {
-    pokemons: Pokemon[] = [];
-    loading = false;
-    error = '';
-    nexPage: string | null = 'https://pokeapi.co/api/v2/pokemon?limit=20';
-    nextPageLoaded = false;
+    pokemons: Pokemon[] = []; // Список покемонов
+    loading = false; // Состояние загрузки
+    error = ''; // Состояние ошибки
+    currPage = 1; // Текущая страница
+    prevPage = 0; // Предыдущая страница
+    wasLastList = false; // Флаг, указывающий, что это последний список
 
-    constructor() {makeAutoObservable(this);}
+    constructor() {
+        makeAutoObservable(this);
+    }
 
-    // Загрузка следующей страницы покемонов
+    // Загрузка данных
     async fetchPokemons() {
-        if (!this. nexPage || this.loading || this.nextPageLoaded) return; // Если следующей страницы нет или уже загружаем данные, выходим
+        if (this.wasLastList || this.loading || this.prevPage === this.currPage) return; // Если это последний список, идет загрузка или страница не изменилась, выходим
 
         this.setLoading(true);
         try {
-            const response = await axios.get(this. nexPage);
-            const pokemonsWithImages = response.data.results.map((pokemon: any) => {
+            const response = await axios.get(
+                `https://pokeapi.co/api/v2/pokemon?offset=${(this.currPage - 1) * 20}&limit=20`
+            );
 
-                const url = new URL(pokemon.url);
-                const pathSegments = url.pathname.split('/').filter(Boolean);
-                const id = pathSegments[pathSegments.length - 1];
+            if (response.data.results.length === 0) {
+                runInAction(() => {
+                    this.wasLastList = true; // Если данных нет, устанавливаем флаг, что это последний список
+                });
+            } else {
+                const pokemonsWithImages = response.data.results.map((pokemon: any) => {
+                    const url = new URL(pokemon.url);
+                    const pathSegments = url.pathname.split('/').filter(Boolean);
+                    const id = pathSegments[pathSegments.length - 1];
 
-                return {
-                    name: pokemon.name,
-                    url: pokemon.url,
-                    image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
-                };
-            });
-            runInAction(() => {
-                this.pokemons = [...this.pokemons, ...pokemonsWithImages]; // Добавляем новые данные к существующим
-                this. nexPage = response.data.next; // Обновляем URL следующей страницы
-                this.nextPageLoaded = !response.data.next; // Устанавливаем флаг, если следующей страницы нет
-            });
+                    return {
+                        name: pokemon.name,
+                        url: pokemon.url,
+                        image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+                    };
+                });
+
+                runInAction(() => {
+                    this.pokemons = [...this.pokemons, ...pokemonsWithImages];
+                    this.prevPage = this.currPage; // Обновляем предыдущую страницу
+                });
+            }
         } catch (error) {
             runInAction(() => {
-                this.error = 'Failed to fetch more pokemons'; // Изменение состояния внутри runInAction
+                this.error = 'Failed to fetch pokemons'; // Обработка ошибки
             });
         } finally {
             runInAction(() => {
-                this.setLoading(false); // Используем action для изменения состояния
+                this.setLoading(false); // Завершаем загрузку
             });
         }
     }
 
-    // method for removing and editing pokemons
-    //remove
-    removePokemon(name: string) {this.pokemons = this.pokemons.filter(pokemon => pokemon.name !== name);}
-    //edit
+    // Увеличение текущей страницы
+    incrementPage() {
+        this.currPage += 1;
+    }
+    removePokemon(name: string) {
+        this.pokemons = this.pokemons.filter(pokemon => pokemon.name !== name);
+    }
     editPokemon(name: string, newName: string) {
         const pokemon = this.pokemons.find(p => p.name === name);
-        if (pokemon) {
-            pokemon.name = newName;
-        }
+        if (pokemon) {pokemon.name = newName;}
     }
 
-    setLoading(value: boolean) {this.loading = value;}
+    setLoading(value: boolean) {
+        this.loading = value;
+    }
 }
 
 export const pokemonStore = new PokemonStore();
