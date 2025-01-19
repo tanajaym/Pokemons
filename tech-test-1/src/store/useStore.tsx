@@ -5,7 +5,7 @@ import { pokemonStore } from './pokemonStore';
 import '../style/style.scss';
 
 const PokemonList = (): JSX.Element => {
-    // Загрузка данных при монтировании компонента
+
     useEffect(() => {
         pokemonStore.fetchPokemons();
     }, []);
@@ -14,18 +14,16 @@ const PokemonList = (): JSX.Element => {
     const onScroll = () => {
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
-        // Если пользователь прокрутил до конца страницы и не происходит загрузка
         if (scrollTop + clientHeight >= scrollHeight - 10 && !pokemonStore.loading && !pokemonStore.wasLastList) {
-            pokemonStore.incrementPage(); // Увеличиваем текущую страницу
-            pokemonStore.fetchPokemons(); // Загружаем новые данные
+            pokemonStore.incrementPage(); 
+            pokemonStore.fetchPokemons(); 
         }
     };
 
-    // Добавляем обработчик прокрутки к окну
+
     useEffect(() => {
         window.addEventListener('scroll', onScroll);
 
-        // Убираем обработчик при размонтировании компонента
         return () => {
             window.removeEventListener('scroll', onScroll);
         };
