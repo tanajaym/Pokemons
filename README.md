@@ -1,4 +1,4 @@
-# techTestVk-1
+# Pokemons!
 here is a technical test for vk-internship
 
 ## Привет! Меня зовут Ева!
